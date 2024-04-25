@@ -13,10 +13,12 @@ import {
     TextField
 } from "@mui/material"
 import "./qa-session.css"
-import { QAResult as QAR, Instructions, Grade,  QAResultsList} from "../types";
+import { QAResult as QAR, Instructions, Grade,  QAResultsList, QASessionType, PageRoutes} from "../types";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Url } from "../utils/url";
+import { Storage } from "../utils/storage";
 
 type QAResult = Partial<QAR> & {instruction:string}
-
 
 function QAInstructionList({
     instructionList,
@@ -173,13 +175,14 @@ export default function QASession({
 }: {
     instructions: Instructions
 }) {
+    const navigate = useNavigate(); 
     const [qaResults, setQaResults] = useState<Record<string, any>>();
+    const location = useLocation();
 
     useEffect(() => {
         if (qaResults) {
-            const prevResults = localStorage.getItem('qa-results');
-            const prevResultsList:QAResultsList = (prevResults ? JSON.parse(prevResults) : []);
-            prevResultsList.push({
+            Storage.QAResults.put({
+                type:Url.Params.parse(location.search).get('type') as QASessionType,
                 tester: "Mike",
                 config: {
                     practice: "asd",
@@ -187,8 +190,9 @@ export default function QASession({
                 },
                 timestamp: Date.now(),
                 results: qaResults
+            }).then(res => {
+                setTimeout(() => navigate(PageRoutes.home), 2000);
             })
-            localStorage.setItem('qa-results', JSON.stringify(prevResultsList))
         }
     }, [qaResults])
 

@@ -5,6 +5,8 @@ export enum PageRoutes {
 
 export type Grade = "passed" | "failed" | "partial"
 
+export type QASessionType = "extension"|"webapp"
+
 export interface Instructions {
     [key: string]: (
         string[] | Instructions
@@ -24,6 +26,7 @@ export interface QAResultObject {
 }
 
 export type QAResultsList = Array<{
+    type:QASessionType
     tester:string
     config:{
         practice:string
