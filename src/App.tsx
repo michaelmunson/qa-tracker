@@ -3,12 +3,21 @@ import logo from './logo.svg';
 import './App.css';
 import QASession from './components/QASession';
 import data from "./mock.data"
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from "react-router-dom"
+import Home from './views/Home';
 
 function App() {
   return (
-    <div>
-      <QASession instructions={data}/>
-    </div>
+    <Router>
+      <Routes>
+        <Route path='/' element={<Home/>}/>
+        <Route path='/new-session' element={<QASession instructions={data}/>}/>
+      </Routes>
+    </Router>
   );
 }
 

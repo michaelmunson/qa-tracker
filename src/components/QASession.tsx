@@ -23,32 +23,9 @@ interface Instructions {
 }
 
 interface QAResult {
-    grade: Grade
-    reason?: string
-}
-
-
-function QAInstruction({
-    instruction,
-    result,
-    setResult
-}: {
     instruction: string
-    result?: QAResult
-    setResult: React.Dispatch<React.SetStateAction<QAResult | undefined>>
-}) {
-    const getVariant = useCallback((conditional: boolean) => conditional ? "contained" : "outlined", [])
-
-    return (
-        <Stack>
-            <Typography>{instruction}</Typography>
-            <Stack direction={"row"} spacing={2}>
-                <Button variant={getVariant(result?.grade === "failed")} color="error" onClick={() => setResult(prev => ({ ...prev, grade: "failed" }))}> Failed </Button>
-                <Button variant={getVariant(result?.grade === "partial")} color="warning" onClick={() => setResult(prev => ({ ...prev, grade: "partial" }))}> Partial </Button>
-                <Button variant={getVariant(result?.grade === "passed")} color="success" onClick={() => setResult(prev => ({ ...prev, grade: "passed" }))}> Success </Button>
-            </Stack>
-        </Stack>
-    )
+    grade?: Grade
+    reason?: string
 }
 
 
@@ -61,8 +38,8 @@ function QAInstructionList({
 }) {
     const [qaResults, setQaResults] = useState<(QAResult | null)[]>(instructionList.map(x => null));
     const [activeIndex, setActiveIndex] = useState(0);
-    const [result, setResult] = useState<QAResult>();
     const activeInstruction = useMemo(() => instructionList[activeIndex], [activeIndex])
+    const [result, setResult] = useState<QAResult>({instruction: activeInstruction});
     const getVariant = useCallback((conditional: boolean) => conditional ? "contained" : "outlined", []);
     const progressPercent = useMemo(() => Math.round((qaResults.filter(x => !!x).length / instructionList.length) * 100), [qaResults])
 
@@ -73,7 +50,7 @@ function QAInstructionList({
                 newArr[activeIndex] = result;
                 return newArr
             });
-            setResult(undefined);
+            setResult({instruction: instructionList[activeIndex+1]});
             setActiveIndex(act => act + 1);
         }
     }, [result]);
@@ -104,8 +81,8 @@ function QAInstructionList({
                     }}>
                     <TextField
                         key={`fail-reason-${activeIndex}`}
-                        helperText={`What is the reason for the ${result?.grade.toUpperCase()} grade? Please be specific and include as many details as possible.`}
-                        placeholder={`Reason for ${result?.grade.toUpperCase()} grade?`}
+                        helperText={`What is the reason for the ${result?.grade?.toUpperCase()} grade? Please be specific and include as many details as possible.`}
+                        placeholder={`Reason for ${result?.grade?.toUpperCase()} grade?`}
                         onChange={e => setResult(prev => ({...prev, reason: e.target.value}) as QAResult)}
                         multiline
                         rows={4}
@@ -116,7 +93,7 @@ function QAInstructionList({
                             newArr[activeIndex] = result as QAResult;
                             return newArr
                         });
-                        setResult(undefined);
+                        setResult({instruction: instructionList[activeIndex+1]});
                         setActiveIndex(act => act + 1);
                     }}> Continue </Button>
                 </div>
@@ -210,7 +187,14 @@ export default function QASession({
     const [qaResults, setQaResults] = useState<Record<string, any>>();
 
     useEffect(() => {
-        if (qaResults) console.log(qaResults);
+        if (qaResults) {
+            let prevResults = localStorage.getItem('qa-results') ;
+            prevResults = (prevResults ? JSON.parse(prevResults) : {});
+            localStorage.setItem('qa-results', JSON.stringify({
+                ...prevResults as any,
+                [`Mike - ${new Date().toLocaleString()}`] : qaResults
+            }))
+        }
     }, [qaResults])
 
     return (
