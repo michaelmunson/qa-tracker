@@ -4,6 +4,14 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import "primereact/resources/themes/lara-light-blue/theme.css"
+import 'primeicons/primeicons.css';
+import $, {EZInline} from 'ez-inline';
+import ezconfig from './ezinline.config';
+
+EZInline.Config
+.setProperties(ezconfig.properties)
+
+Object.assign(window, {$})
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

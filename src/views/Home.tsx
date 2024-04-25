@@ -1,26 +1,35 @@
-import React from 'react'
+import React, { useState } from 'react'
 import "./home.css";
+import { Stack } from '@mui/material';
+import { Card } from "primereact/card";
+import { Button } from "primereact/button"
+import { Skeleton } from "primereact/skeleton"
+import { useNavigate } from 'react-router-dom';
+import { PageRoutes } from '../types';
+import $ from 'ez-inline';
 
-function Card({
-    children
-}:{
-    children:JSX.Element|JSX.Element[]
-}){
+function ViewQAResults() {
+    const [loading, setLoading] = useState(true);
     return (
-        <div className='card'>
-            {children}
-        </div>
+        <Card title="View QA Results" className='card' style={$`w-75`}>
+
+        </Card>
     )
 }
 
 export default function Home() {
-  return (
-    <div id="home-page-container">
-        <div id='row-1'>
-            <Card>
-                <h3>View QA Results</h3>
-            </Card>
+    const navigate = useNavigate();
+
+    return (
+        <div id="home-page-container">
+            <Stack direction={'row'} spacing={2}>
+                <Card title="New QA Session" className='card'>
+                    <Stack>
+                        <Button label='New Extension QA Session' icon="pi pi-plus" onClick={() => navigate(PageRoutes.newSession)} style={$`white-space-nowrap`}/>
+                    </Stack>
+                </Card>
+                <ViewQAResults />
+            </Stack>
         </div>
-    </div>
-  )
+    )
 }

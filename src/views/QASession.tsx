@@ -13,20 +13,9 @@ import {
     TextField
 } from "@mui/material"
 import "./qa-session.css"
+import { QAResult as QAR, Instructions, Grade,  QAResultsList} from "../types";
 
-type Grade = "passed" | "failed" | "partial"
-
-interface Instructions {
-    [key: string]: (
-        string[] | Instructions
-    )
-}
-
-interface QAResult {
-    instruction: string
-    grade?: Grade
-    reason?: string
-}
+type QAResult = Partial<QAR> & {instruction:string}
 
 
 function QAInstructionList({
@@ -188,12 +177,18 @@ export default function QASession({
 
     useEffect(() => {
         if (qaResults) {
-            let prevResults = localStorage.getItem('qa-results') ;
-            prevResults = (prevResults ? JSON.parse(prevResults) : {});
-            localStorage.setItem('qa-results', JSON.stringify({
-                ...prevResults as any,
-                [`Mike - ${new Date().toLocaleString()}`] : qaResults
-            }))
+            const prevResults = localStorage.getItem('qa-results');
+            const prevResultsList:QAResultsList = (prevResults ? JSON.parse(prevResults) : []);
+            prevResultsList.push({
+                tester: "Mike",
+                config: {
+                    practice: "asd",
+                    pt: "123"
+                },
+                timestamp: Date.now(),
+                results: qaResults
+            })
+            localStorage.setItem('qa-results', JSON.stringify(prevResultsList))
         }
     }, [qaResults])
 

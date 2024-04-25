@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import QASession from './components/QASession';
+import QASession from './views/QASession';
 import data from "./mock.data"
 import {
   BrowserRouter as Router,
