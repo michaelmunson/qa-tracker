@@ -1,6 +1,7 @@
 export enum PageRoutes {
     home = "/",
-    newSession = "/new-session"
+    newSession = "/new-session",
+    results = "/results"
 }
 
 export type Grade = "passed" | "failed" | "partial"

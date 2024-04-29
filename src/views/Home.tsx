@@ -23,6 +23,7 @@ function ViewQAResults({
 }: {
     qaResults: QAResultsList | undefined
 }) {
+    const navigate = useNavigate();
     const [lastQaResultData, setLastQaResultData] = useState<RefinedResultData>()
 
     useEffect(() => {
@@ -70,7 +71,7 @@ function ViewQAResults({
                                 <hr style={$`w-100`} />
                                 <p style={$`m-0 font-size-1.2rem`}>89% of Tests Passed</p>
                             </div>
-                            <Button label="View All Results" />
+                            <Button label="View All Results" onClick={() => navigate(PageRoutes.results)}/>
                         </div>
                         <div style={$`flex col align-items-center w-100`}>
                             <Chart
@@ -97,15 +98,14 @@ function ViewQAResults({
     )
 }
 
-export default function Home() {
+export default function Home({
+    qaResults,
+    setQaResults
+}:{
+    qaResults:QAResultsList|undefined
+    setQaResults:React.Dispatch<React.SetStateAction<QAResultsList | undefined>>
+}) {
     const navigate = useNavigate();
-    const [qaResults, setQaResults] = useState<QAResultsList>();
-
-    useEffect(() => {
-        Storage.QAResults.get().then(result => {
-            setTimeout(() => setQaResults(result), 2000);
-        })
-    }, [])
 
     return (
         <div id="home-page-container">
